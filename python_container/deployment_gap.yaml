@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: leonpython-svc
+  annotations: 
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
   selector:
     app: leonpython-app
@@ -9,6 +11,7 @@ spec:
   - protocol: "TCP"
     port: 5000
     targetPort: 5000
+  type: LoadBalancer
 
 
 ---
@@ -28,7 +31,7 @@ spec:
     spec:
       containers:
       - name: leonpython-app
-        image: leonsacr205.azurecr.io/cass:v1
+        image: gacr2nsandbox.azurecr.io/leepereira/caastestimage:v2
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
