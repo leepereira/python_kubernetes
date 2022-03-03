@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: app2-svc
+spec:
+  selector:
+    app: leonpython-app2
+  ports:
+  - protocol: "TCP"
+    port: 5000
+    targetPort: 5000
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leonapp2
+spec:
+  selector:
+    matchLabels:
+      app: leonpython-app2
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: leonpython-app2
+    spec:
+      containers:
+      - name: leonpython-app2
+        image: leonsacr205.azurecr.io/app2:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000

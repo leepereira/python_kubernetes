@@ -1,0 +1,62 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  namespace: argocd
+  name: argocd-gateway
+spec:
+  selector:
+    app: istio-ingressgateway # label on the ingress pod
+    istio: istio-ingressgateway-argocd  # label on the ingress pod
+  servers:
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE  
+    hosts:
+    - "*"
+---
+
+
+
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  namespace: argocd
+  labels:
+  name: dr-argocd-server
+spec:
+  host: argocd-server.argocd.svc.cluster.local
+  subsets:
+  - labels:
+      app: argocd-server
+    name: argocd-server-ss
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  namespace: argocd
+  labels:
+    app: argocd-server
+  name: app3-vs
+spec:
+  hosts:
+  - 20.84.31.115
+  gateways:
+  - argocd-gateway
+  http:
+  - match:
+     - uri:
+        prefix: "/app3"
+    rewrite:
+      uri: "/"    
+    route:
+    - destination:
+        host: argocd-server.argocd.svc.cluster.local
+
+
+
+
+

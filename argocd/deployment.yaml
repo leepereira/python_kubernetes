@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: argocd
+  name: argocd-svc
+spec:
+  selector:
+    app: argocd-app
+  ports:
+  - protocol: "TCP"
+    port: 5000
+    targetPort: 5000
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: argocd
+  name: argocd-deploy
+spec:
+  selector:
+    matchLabels:
+      app: argocd-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: argocd-app
+    spec:
+      containers:
+      - name: argocd-app
+        image: leonsacr205.azurecr.io/app1:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000

@@ -1,0 +1,20 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: dev
+  name: dev-user-full-access
+rules:
+- apiGroups: ["", "extensions", "apps"] # "" indicates the core API group
+  resources: ["*"]
+  verbs: ["*"]
+- apiGroups: ["batch"] 
+  resources:
+  - jobs
+  - cronjobs
+  verbs: ["*"]
+
+
+
+
+
+  

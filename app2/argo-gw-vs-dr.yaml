@@ -1,0 +1,58 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  namespace: argocd
+  name: argocd-gateway
+spec:
+  selector:
+    app: istio-ingressgateway # label on the ingress pod
+    istio: ingressgateway  # label on the ingress pod
+  servers:
+  - port:
+      number: 443
+      name: https
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+
+
+
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  namespace: argocd
+  labels:
+  name: dr-argocd
+spec:
+  host: argocd-server.argocd.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+---
+
+
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  namespace: argocd
+  labels:
+    appname: argocdserver
+  name: vs-argocd
+spec:
+  hosts:
+  - pereira.vasaiforyou.com
+  gateways:
+  - argocd-gateway
+  http:
+  - match:
+     - uri:
+        prefix: "/"
+    rewrite:
+      uri: "/"    
+    route:
+    - destination:
+        host: argocd-server.argocd.svc.cluster.local
+        port:
+          number: 80
