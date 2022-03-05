@@ -20,7 +20,7 @@ spec:
   selector:
     matchLabels:
       app: leonpython-app1
-  replicas: 1
+  replicas: 3
   template:
     metadata:
       labels:
